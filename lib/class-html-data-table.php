@@ -6,7 +6,7 @@
  * @author    Barn2 Media <info@barn2.co.uk>
  * @license   GPL-3.0
  * @copyright Barn2 Media Ltd
- * @version   1.2
+ * @version   1.2.1
  */
 // Prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
