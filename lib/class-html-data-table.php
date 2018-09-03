@@ -1,4 +1,13 @@
 <?php
+/**
+ * HTML Data Table classes and functions.
+ *
+ * @package   Util
+ * @author    Barn2 Media <info@barn2.co.uk>
+ * @license   GPL-3.0
+ * @copyright Barn2 Media Ltd
+ * @version   1.2
+ */
 // Prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -57,7 +66,6 @@ if ( ! class_exists( 'Html_Table_Cell' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.0
 	 */
 	class Html_Table_Cell {
 
@@ -106,7 +114,6 @@ if ( ! class_exists( 'Html_Table_Row' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.0
 	 */
 	class Html_Table_Row {
 
@@ -154,7 +161,7 @@ if ( ! class_exists( 'Html_Table_Row' ) ) {
 			}
 			return array(
 				'attributes' => $this->attributes,
-				'cells'		 => array_map( 'self::cell_to_array', $this->cells )
+				'cells'		 => array_map( array( __CLASS__, 'cell_to_array' ), $this->cells )
 			);
 		}
 
@@ -178,7 +185,6 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   3.0
 	 */
 	class Html_Data_Table {
 
@@ -186,6 +192,7 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 		private $header;
 		private $footer;
 		private $data		 = array();
+		private $above		 = array();
 		private $current_row;
 
 		public function __construct() {
@@ -198,12 +205,12 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 			$this->attributes[$name] = $value;
 		}
 
-		public function add_header( $data, $atts = false, $key = false, $is_th = true ) {
-			$this->header->add_cell( $data, $atts, $key, $is_th );
+		public function add_header( $heading, $attributes = false, $key = false, $use_th = true ) {
+			$this->header->add_cell( $heading, $attributes, $key, $use_th );
 		}
 
-		public function add_footer( $data, $atts = false, $key = false, $is_th = true ) {
-			$this->footer->add_cell( $data, $atts, $key, $is_th );
+		public function add_footer( $heading, $attributes = false, $key = false, $use_th = true ) {
+			$this->footer->add_cell( $heading, $attributes, $key, $use_th );
 		}
 
 		public function new_row( $atts = false ) {
@@ -213,11 +220,11 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 			$this->current_row = new Html_Table_Row( $atts );
 		}
 
-		public function add_data( $data, $atts = false, $key = false ) {
+		public function add_data( $data, $attributes = false, $key = false ) {
 			if ( is_array( $data ) ) {
 				$data = implode( '', $data );
 			}
-			$this->current_row->add_cell( $data, $atts, $key );
+			$this->current_row->add_cell( $data, $attributes, $key );
 		}
 
 		public function get_data() {
@@ -229,21 +236,31 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 			$this->data = (array) $data;
 		}
 
-		public function to_html() {
-			$thead	 = ! $this->header->is_empty() ? '<thead>' . $this->header->to_html() . '</thead>' : '';
-			$tfoot	 = ! $this->footer->is_empty() ? '<tfoot>' . $this->footer->to_html() . '</tfoot>' : '';
-			$data	 = '';
+		public function add_above( $above ) {
+			if ( $above ) {
+				$this->above[] = $above;
+			}
+		}
+
+		public function to_html( $data_only = false ) {
+			$data = '';
 
 			foreach ( $this->get_data() as $row ) {
 				$data .= $row->to_html();
 			}
 
-			$body = $data ? '<tbody>' . $data . '</tbody>' : '';
-
-			return sprintf( '<table%1$s>%2$s%3$s%4$s</table>', b2_format_html_attributes( $this->attributes ), $thead, $body, $tfoot );
+			if ( $data_only ) {
+				return $data;
+			} else {
+				$thead	 = ! $this->header->is_empty() ? '<thead>' . $this->header->to_html() . '</thead>' : '';
+				$tfoot	 = ! $this->footer->is_empty() ? '<tfoot>' . $this->footer->to_html() . '</tfoot>' : '';
+				$tbody	 = $data ? '<tbody>' . $data . '</tbody>' : '';
+				$above	 = $this->above ? implode( "\n", $this->above ) : '';
+			}
+			return sprintf( '%5$s<table%1$s>%2$s%3$s%4$s</table>', b2_format_html_attributes( $this->attributes ), $thead, $tbody, $tfoot, $above );
 		}
 
-		public function to_array() {
+		public function to_array( $data_only = false ) {
 			$data	 = $this->get_data();
 			$body	 = array();
 
@@ -251,26 +268,34 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 				$body[] = $row->to_array();
 			}
 
-			$result = array(
-				'attributes' => $this->attributes,
-				'thead'		 => $this->header->to_array(),
-				'body'		 => $body,
-				'tfoot'		 => $this->footer->to_array()
-			);
-
-			return $result;
+			if ( $data_only ) {
+				return $body;
+			} else {
+				return array(
+					'above'		 => $this->above,
+					'attributes' => $this->attributes,
+					'thead'		 => $this->header->to_array(),
+					'tbody'		 => $body,
+					'tfoot'		 => $this->footer->to_array()
+				);
+			}
 		}
 
-		public function to_json() {
-			return wp_json_encode( $this->to_array() );
+		public function to_json( $data_only = false ) {
+			return wp_json_encode( $this->to_array( $data_only ) );
 		}
 
 		public function reset() {
+			$this->above		 = array();
 			$this->attributes	 = array();
-			$this->data			 = array();
 			$this->header		 = new Html_Table_Row();
 			$this->footer		 = new Html_Table_Row();
+			$this->reset_data();
+		}
+
+		public function reset_data() {
 			$this->current_row	 = new Html_Table_Row();
+			$this->data			 = array();
 		}
 
 	}

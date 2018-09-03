@@ -13,7 +13,7 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.2
+	 * @version   1.2.1
 	 */
 	class WC_Settings_Additional_Field_Types {
 
@@ -36,7 +36,7 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 					<?php echo $field_description['tooltip_html']; ?>
 				</th>
 				<td class="forminp forminp-<?php echo sanitize_title( $value['type'] ) ?>">&lrm;
-					<span class="colorpickpreview" style="background: <?php echo esc_attr( $color_value ); ?>"></span>
+					<span class="colorpickpreview" style="background: <?php echo esc_attr( $color_value ); ?>">&nbsp;</span>
 					<input
 						name="<?php echo esc_attr( $value['id'] . "[color]" ); ?>"
 						id="<?php echo esc_attr( $value['id'] . "[color]" ); ?>"
@@ -45,7 +45,7 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 						style="width:6.7em; display:inline-block;"
 						value="<?php echo esc_attr( $color_value ); ?>"
 						class="<?php echo esc_attr( $value['class'] ); ?> colorpick"
-						placeholder="<?php _e( 'Color', 'woocommerce-product-table' ); ?>"
+						placeholder="<?php _e( 'Color', 'barn2' ); ?>"
 						/>&lrm;
 					<div id="colorPickerDiv_<?php echo esc_attr( $value['id'] ); ?>" class="colorpickdiv" style="z-index: 100;background:#eee;border:1px solid #ccc;position:absolute;display:none;"></div>
 					<input
@@ -56,7 +56,7 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 						value="<?php echo esc_attr( $size_value ); ?>"
 						class="small-text"
 						min="<?php echo esc_attr( $size_min ); ?>"
-						placeholder="<?php _e( 'Size', 'woocommerce-product-table' ); ?>"
+						placeholder="<?php _e( 'Size', 'barn2' ); ?>"
 						/> <?php echo $field_description['description']; ?>
 				</td>
 			</tr>
