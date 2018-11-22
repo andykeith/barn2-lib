@@ -6,7 +6,7 @@
  * @author    Barn2 Media <info@barn2.co.uk>
  * @license   GPL-3.0
  * @copyright Barn2 Media Ltd
- * @version   1.2.1
+ * @version   1.3
  */
 // Prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
@@ -60,7 +60,7 @@ if ( ! function_exists( 'b2_format_html_attributes' ) ) {
 if ( ! class_exists( 'Html_Table_Cell' ) ) {
 
 	/**
-	 * Represents a cell in a <code>Html_Data_Table</code>.
+	 * Represents a cell in a <code>Html_Table_Row</code>.
 	 *
 	 * @package   Util
 	 * @author    Barn2 Media <info@barn2.co.uk>
@@ -192,8 +192,9 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 		private $header;
 		private $footer;
 		private $data		 = array();
-		private $above		 = array();
 		private $current_row;
+		private $above		 = array(); // deprecated
+		private $below		 = array(); // deprecated
 
 		public function __construct() {
 			$this->header		 = new Html_Table_Row();
@@ -236,9 +237,21 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 			$this->data = (array) $data;
 		}
 
+		/**
+		 * @deprecated 1.3
+		 */
 		public function add_above( $above ) {
 			if ( $above ) {
 				$this->above[] = $above;
+			}
+		}
+
+		/**
+		 * @deprecated 1.3
+		 */
+		public function add_below( $below ) {
+			if ( $below ) {
+				$this->below[] = $below;
 			}
 		}
 
@@ -255,9 +268,12 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 				$thead	 = ! $this->header->is_empty() ? '<thead>' . $this->header->to_html() . '</thead>' : '';
 				$tfoot	 = ! $this->footer->is_empty() ? '<tfoot>' . $this->footer->to_html() . '</tfoot>' : '';
 				$tbody	 = $data ? '<tbody>' . $data . '</tbody>' : '';
+
+				// @deprecated
 				$above	 = $this->above ? implode( "\n", $this->above ) : '';
+				$below	 = $this->below ? implode( "\n", $this->below ) : '';
 			}
-			return sprintf( '%5$s<table%1$s>%2$s%3$s%4$s</table>', b2_format_html_attributes( $this->attributes ), $thead, $tbody, $tfoot, $above );
+			return sprintf( '%5$s<table%1$s>%2$s%3$s%4$s</table>%6$s', b2_format_html_attributes( $this->attributes ), $thead, $tbody, $tfoot, $above, $below );
 		}
 
 		public function to_array( $data_only = false ) {
@@ -272,11 +288,12 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 				return $body;
 			} else {
 				return array(
-					'above'		 => $this->above,
 					'attributes' => $this->attributes,
 					'thead'		 => $this->header->to_array(),
 					'tbody'		 => $body,
-					'tfoot'		 => $this->footer->to_array()
+					'tfoot'		 => $this->footer->to_array(),
+					'above'		 => $this->above,
+					'below'		 => $this->below
 				);
 			}
 		}
@@ -286,10 +303,12 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 		}
 
 		public function reset() {
-			$this->above		 = array();
 			$this->attributes	 = array();
 			$this->header		 = new Html_Table_Row();
 			$this->footer		 = new Html_Table_Row();
+			$this->above		 = array();
+			$this->below		 = array();
+
 			$this->reset_data();
 		}
 
