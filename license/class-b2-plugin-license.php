@@ -18,7 +18,7 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.7.1
+	 * @version   1.7.2
 	 */
 	class Barn2_Plugin_License {
 
@@ -231,7 +231,7 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 		 */
 		public function get_license_key_admin_message() {
 			$message			 = __( 'Please enter your license key.', 'barn2' );
-			$deactivate_button	 = sprintf( '<button type="submit" class="button" name="deactivate_key" value="%1$s" style="margin:3px 0 0 8px;">%2$s</button>', esc_attr( $this->license_key_option ), __( 'Deactivate', 'barn2' ) );
+			$deactivate_button	 = sprintf( '<button type="submit" class="button" name="deactivate_key" value="%1$s" style="margin-left:8px;">%2$s</button>', esc_attr( $this->license_key_option ), __( 'Deactivate', 'barn2' ) );
 
 			if ( $this->is_valid() ) {
 				$message = sprintf( '<span style="color:green;">✓ %s</span>', __( 'License key successfully activated.', 'barn2' ) ) . $deactivate_button;
