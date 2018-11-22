@@ -129,6 +129,17 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 			</tr><?php
 		}
 
+		public static function settings_start_field( $value ) {
+			$id		 = ! empty( $value['id'] ) ? sprintf( ' id="%s"', esc_attr( $value['id'] ) ) : '';
+			$class	 = ! empty( $value['class'] ) ? sprintf( ' class="%s"', esc_attr( $value['class'] ) ) : '';
+
+			echo "<div{$id}{$class}>";
+		}
+
+		public static function settings_end_field( $value ) {
+			echo '</div>';
+		}
+
 	}
 	// class WC_Settings_Additional_Field_Types
 }
