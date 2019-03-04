@@ -9,11 +9,10 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 	/**
 	 * Helper functions for the WordPress Settings API.
 	 *
-	 * @package   Util
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
-	 * @version   1.1
 	 * @copyright Barn2 Media Ltd
+	 * @version   1.1
 	 */
 	class WP_Settings_API_Helper {
 
@@ -146,4 +145,5 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 		}
 
 	}
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 // Prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -11,11 +12,10 @@ if ( ! class_exists( 'WP_Scoped_Hooks' ) ) {
 	 * added or removed will be recognised only during the specified scope. After the given scope, the
 	 * original WordPress hook environment is restored to its previous state.
 	 *
-	 * @package   Util
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
-	 * @version   1.3
 	 * @copyright Barn2 Media Ltd
+	 * @version   1.3
 	 */
 	class WP_Scoped_Hooks {
 
@@ -30,8 +30,8 @@ if ( ! class_exists( 'WP_Scoped_Hooks' ) ) {
 
 		private function initialize() {
 			$this->hooks = array(
-				'added'		 => array(),
-				'removed'	 => array()
+				'added' => array(),
+				'removed' => array()
 			);
 
 			if ( $this->start_hook ) {
@@ -89,5 +89,6 @@ if ( ! class_exists( 'WP_Scoped_Hooks' ) ) {
 		}
 
 	}
+
 	// WP_Scoped_Hooks
 }

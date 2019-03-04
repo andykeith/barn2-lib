@@ -9,7 +9,6 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 	/**
 	 * Additional field types for WooCommerce settings pages.
 	 *
-	 * @package   Util
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
@@ -110,20 +109,24 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 								<input
 									type="text"
 									name="<?php echo esc_attr( $value['id'] ); ?>[]"
-									<?php if ( $first_field ) { echo 'id="' . esc_attr( $value['id'] ) . '"'; } ?>
+									<?php if ( $first_field ) {
+										echo 'id="' . esc_attr( $value['id'] ) . '"';
+									} ?>
 									value="<?php echo esc_attr( $option_value ); ?>"
 									class="<?php echo esc_attr( $value['class'] ); ?>"
 									placeholder="<?php echo esc_attr( $value['placeholder'] ); ?>"
 									/>
 								<span class="multi-field-actions">
 									<a class="multi-field-add" data-action="add" href="#"><span class="dashicons dashicons-plus"></span></a>
-									<?php if ( $i > 0 ) : ?>
+										<?php if ( $i > 0 ) : ?>
 										<a class="multi-field-remove" data-action="remove" href="#"><span class="dashicons dashicons-minus"></span></a>
-										<?php endif; ?>
+								<?php endif; ?>
 								</span>
-								<?php if ( $first_field ) { echo $field_description['description']; } ?>
+							<?php if ( $first_field ) {
+								echo $field_description['description'];
+							} ?>
 							</div>
-						<?php endforeach; ?>
+			<?php endforeach; ?>
 					</div>
 				</td>
 			</tr><?php
@@ -141,5 +144,6 @@ if ( ! class_exists( 'WC_Settings_Additional_Field_Types' ) ) {
 		}
 
 	}
+
 	// class WC_Settings_Additional_Field_Types
 }

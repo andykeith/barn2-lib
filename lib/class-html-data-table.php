@@ -1,8 +1,8 @@
 <?php
+
 /**
  * HTML Data Table classes and functions.
  *
- * @package   Util
  * @author    Barn2 Media <info@barn2.co.uk>
  * @license   GPL-3.0
  * @copyright Barn2 Media Ltd
@@ -55,6 +55,7 @@ if ( ! function_exists( 'b2_format_html_attributes' ) ) {
 		}
 		return $result;
 	}
+
 }
 
 if ( ! class_exists( 'Html_Table_Cell' ) ) {
@@ -93,7 +94,7 @@ if ( ! class_exists( 'Html_Table_Cell' ) ) {
 		public function to_array() {
 			return array(
 				'attributes' => $this->attributes,
-				'data'		 => $this->data
+				'data' => $this->data
 			);
 		}
 
@@ -103,6 +104,7 @@ if ( ! class_exists( 'Html_Table_Cell' ) ) {
 		}
 
 	}
+
 }
 
 if ( ! class_exists( 'Html_Table_Row' ) ) {
@@ -161,7 +163,7 @@ if ( ! class_exists( 'Html_Table_Row' ) ) {
 			}
 			return array(
 				'attributes' => $this->attributes,
-				'cells'		 => array_map( array( __CLASS__, 'cell_to_array' ), $this->cells )
+				'cells' => array_map( array( __CLASS__, 'cell_to_array' ), $this->cells )
 			);
 		}
 
@@ -170,6 +172,7 @@ if ( ! class_exists( 'Html_Table_Row' ) ) {
 		}
 
 	}
+
 }
 
 if ( ! class_exists( 'Html_Data_Table' ) ) {
@@ -289,11 +292,11 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 			} else {
 				return array(
 					'attributes' => $this->attributes,
-					'thead'		 => $this->header->to_array(),
-					'tbody'		 => $body,
-					'tfoot'		 => $this->footer->to_array(),
-					'above'		 => $this->above,
-					'below'		 => $this->below
+					'thead' => $this->header->to_array(),
+					'tbody' => $body,
+					'tfoot' => $this->footer->to_array(),
+					'above' => $this->above,
+					'below' => $this->below
 				);
 			}
 		}
@@ -318,5 +321,6 @@ if ( ! class_exists( 'Html_Data_Table' ) ) {
 		}
 
 	}
+
 	// class Html_Data_Table
 } // if class doesn't exist

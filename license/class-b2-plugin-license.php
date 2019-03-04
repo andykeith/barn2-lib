@@ -1,4 +1,5 @@
 <?php
+
 // Prevent direct file access
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -14,7 +15,6 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 	/**
 	 * Handles the plugin licensing.
 	 *
-	 * @package   License
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
@@ -51,11 +51,11 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 			// Create the plugin updater
 			$this->edd_updater = new EDD_SL_Plugin_Updater(
 				self::EDD_STORE_URL, $this->plugin_file, array(
-				'version'	 => $this->plugin_version, // current version number
-				'license'	 => $this->get_license_key(), // license key
-				'item_name'	 => $this->download_name, // title of the download in EDD
-				'author'	 => self::PLUGIN_AUTHOR, // author of this plugin
-				'beta'		 => false
+				'version' => $this->plugin_version, // current version number
+				'license' => $this->get_license_key(), // license key
+				'item_name' => $this->download_name, // title of the download in EDD
+				'author' => self::PLUGIN_AUTHOR, // author of this plugin
+				'beta' => false
 				)
 			);
 		}
@@ -120,9 +120,9 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 				// Data to send in our API request
 				$api_params = array(
 					'edd_action' => 'activate_license',
-					'license'	 => $license_key,
-					'item_name'	 => urlencode( $this->download_name ), // the name of our product in EDD
-					'url'		 => home_url()
+					'license' => $license_key,
+					'item_name' => urlencode( $this->download_name ), // the name of our product in EDD
+					'url' => home_url()
 				);
 
 				// Call the Software Licensing API
@@ -195,9 +195,9 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 				// Data to send in our API request
 				$api_params = array(
 					'edd_action' => 'deactivate_license',
-					'license'	 => $license_key,
-					'item_name'	 => urlencode( $this->download_name ), // the name of our product in EDD
-					'url'		 => home_url()
+					'license' => $license_key,
+					'item_name' => urlencode( $this->download_name ), // the name of our product in EDD
+					'url' => home_url()
 				);
 
 				// Call the custom API.
@@ -345,5 +345,6 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 		}
 
 	}
+
 	// class Barn2_Plugin_License
 } // if class doesn't exist
