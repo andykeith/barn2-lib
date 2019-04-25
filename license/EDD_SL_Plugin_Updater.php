@@ -7,7 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Allows plugins to use their own update API.
  *
  * @author Easy Digital Downloads
- * @version 1.6.17
+ * @version 1.6.18
  */
 class EDD_SL_Plugin_Updater {
 
@@ -109,7 +109,7 @@ class EDD_SL_Plugin_Updater {
 		$version_info = $this->get_cached_version_info();
 
 		if ( false === $version_info ) {
-			$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
+			$version_info = $this->api_request( array( 'slug' => $this->slug, 'beta' => $this->beta ) );
 
 			$this->set_version_info_cache( $version_info );
 
@@ -120,6 +120,9 @@ class EDD_SL_Plugin_Updater {
 			if ( version_compare( $this->version, $version_info->new_version, '<' ) ) {
 
 				$_transient_data->response[ $this->name ] = $version_info;
+
+				// Make sure the plugin property is set to the plugin's name/location. See issue 1463 on Software Licensing's GitHub repo.
+				$_transient_data->response[ $this->name ]->plugin = $this->name;
 
 			}
 
@@ -167,7 +170,7 @@ class EDD_SL_Plugin_Updater {
 			$version_info = $this->get_cached_version_info();
 
 			if ( false === $version_info ) {
-				$version_info = $this->api_request( 'plugin_latest_version', array( 'slug' => $this->slug, 'beta' => $this->beta ) );
+				$version_info = $this->api_request( array( 'slug' => $this->slug, 'beta' => $this->beta ) );
 
 				// Since we disabled our filter for the transient, we aren't running our object conversion on banners, sections, or icons. Do this now:
 				if ( isset( $version_info->banners ) && ! is_array( $version_info->banners ) ) {
@@ -206,6 +209,8 @@ class EDD_SL_Plugin_Updater {
 
 		}
 
+		//@todo: Check license and store in transient - use check_license action
+		
 		// Restore our filter
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
 
@@ -219,6 +224,8 @@ class EDD_SL_Plugin_Updater {
 			echo '<div class="update-message notice inline notice-warning notice-alt">';
 
 			$changelog_link = self_admin_url( 'index.php?edd_sl_action=view_plugin_changelog&plugin=' . $this->name . '&slug=' . $this->slug . '&TB_iframe=true&width=772&height=911' );
+
+			//@todo: Fetch license state from above transient. If 'site_inactive' or 'inactive' show 'Automatic update not available message'
 
 			if ( empty( $version_info->download_link ) ) {
 				printf(
@@ -288,7 +295,7 @@ class EDD_SL_Plugin_Updater {
 		//If we have no transient-saved value, run the API, set a fresh transient with the API value, and return that value too right now.
 		if ( empty( $edd_api_request_transient ) ) {
 
-			$api_response = $this->api_request( 'plugin_information', $to_send );
+			$api_response = $this->api_request( $to_send );
 
 			// Expires in 3 hours
 			$this->set_version_info_cache( $api_response, $cache_key );
@@ -314,6 +321,10 @@ class EDD_SL_Plugin_Updater {
 		// Convert icons into an associative array, since we're getting an object, but Core expects an array.
 		if ( isset( $_data->icons ) && ! is_array( $_data->icons ) ) {
 			$_data->icons = $this->convert_object_to_array( $_data->icons );
+		}
+
+		if( ! isset( $_data->plugin ) ) {
+			$_data->plugin = $this->name;
 		}
 
 		return $_data;
@@ -368,9 +379,11 @@ class EDD_SL_Plugin_Updater {
 	 * @param array   $_data   Parameters for the API action.
 	 * @return false|object
 	 */
-	private function api_request( $_action, $_data ) {
+	private function api_request( $_data ) {
 
 		global $wp_version, $edd_plugin_url_available;
+
+		$verify_ssl = $this->verify_ssl();
 
 		// Do a quick status check on this domain if we haven't already checked it.
 		$store_hash = md5( $this->api_url );
@@ -385,7 +398,7 @@ class EDD_SL_Plugin_Updater {
 				$edd_plugin_url_available[ $store_hash ] = false;
 			} else {
 				$test_url = $scheme . '://' . $host . $port;
-				$response = wp_remote_get( $test_url, array( 'timeout' => $this->health_check_timeout, 'sslverify' => true ) );
+				$response = wp_remote_get( $test_url, array( 'timeout' => $this->health_check_timeout, 'sslverify' => $verify_ssl ) );
 				$edd_plugin_url_available[ $store_hash ] = is_wp_error( $response ) ? false : true;
 			}
 		}
@@ -416,7 +429,6 @@ class EDD_SL_Plugin_Updater {
 			'beta'       => ! empty( $data['beta'] ),
 		);
 
-		$verify_ssl = $this->verify_ssl();
 		$request    = wp_remote_post( $this->api_url, array( 'timeout' => 15, 'sslverify' => $verify_ssl, 'body' => $api_params ) );
 
 		if ( ! is_wp_error( $request ) ) {
