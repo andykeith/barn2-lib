@@ -18,7 +18,7 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.7.2
+	 * @version   1.8
 	 */
 	class Barn2_Plugin_License {
 
@@ -141,24 +141,32 @@ if ( ! class_exists( 'Barn2_Plugin_License' ) ) {
 
 					if ( false === $license_data->success ) {
 						switch ( $license_data->error ) {
+							case 'missing' :
+								$error_message	 = __( 'Please enter your license key.', 'barn2' );
+								break;
+							case 'missing_url' :
+								$error_message	 = __( 'No URL was supplied for activation.', 'barn2' );
+								break;
+							case 'license_not_activable' :
+								$error_message	 = __( 'This license is for a bundled product and cannot be activated.', 'barn2' );
+								break;
 							case 'expired' :
 								$error_message	 = sprintf(
 									__( 'Your license key expired on %s.', 'barn2' ), date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
 								);
 								break;
-							case 'revoked' :
-								$error_message	 = __( 'Your license key has been disabled.', 'barn2' );
-								break;
-							case 'missing' :
 							case 'item_name_mismatch' :
-								$error_message	 = __( 'Your license key is invalid.', 'barn2' );
-								break;
-							case 'invalid' :
-							case 'site_inactive' :
-								$error_message	 = __( 'Your license is not active for this URL.', 'barn2' );
+							case 'invalid_item_id':
+								$error_message	 = __( 'Your license key is not valid for this plugin.', 'barn2' );
 								break;
 							case 'no_activations_left':
 								$error_message	 = __( 'Your license key has reached its activation limit.', 'barn2' );
+								break;
+							case 'disabled':
+								$error_message	 = __( 'Your license key has been disabled, please contact support,', 'barn2' );
+								break;
+							case 'key_mismatch':
+								$error_message	 = __( 'License key mismatch, please contact support.', 'barn2' );
 								break;
 							default :
 								$error_message	 = __( 'There was an error activating your license, please try again.', 'barn2' );
