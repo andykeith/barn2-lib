@@ -12,7 +12,7 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 	 * @author    Barn2 Media <info@barn2.co.uk>
 	 * @license   GPL-3.0
 	 * @copyright Barn2 Media Ltd
-	 * @version   1.1
+	 * @version   1.2
 	 */
 	class WP_Settings_API_Helper {
 
@@ -33,10 +33,12 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 					continue;
 				}
 
-				$args = wp_parse_args( $setting, array_fill_keys( array( 'id', 'desc', 'label', 'title', 'class', 'default', 'suffix', 'custom_attributes' ), '' ) );
+				$args = wp_parse_args( $setting, array_fill_keys( array( 'id', 'desc', 'label', 'title', 'class', 'field_class', 'default', 'suffix', 'custom_attributes' ), '' ) );
 
 				$args['input_class'] = $args['class'];
 				unset( $args['class'] );
+
+				$args['class']		 = $args['field_class'];
 				$args['label_for']	 = $args['id'];
 
 				$setting_callback = array( __CLASS__, 'settings_field_' . $setting['type'] );
@@ -96,7 +98,7 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 					<input id="<?php echo esc_attr( $args['id'] ); ?>" name="<?php echo esc_attr( $args['id'] ); ?>" class="<?php echo esc_attr( $args['input_class'] ); ?>" type="checkbox"<?php checked( $current_value ); ?> value="1"<?php self::custom_attributes( $args ); ?>/>
 					<?php
 					if ( ! empty( $args['label'] ) ) {
-						echo $args['label'];
+						echo esc_html( $args['label'] );
 					}
 					?>
 				</label>
@@ -123,7 +125,7 @@ if ( ! class_exists( 'WP_Settings_API_Helper' ) ) {
 			$result		 = '';
 
 			foreach ( $custom_atts as $att => $value ) {
-				$result .= " {$att}=\"{$value}\"";
+				$result .= sprintf( ' %s="%s"', sanitize_key( $att ), esc_attr( $value ) );
 			}
 			return $result;
 		}
